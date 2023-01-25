@@ -25,7 +25,6 @@ export default {
       try {
         const response = await axios.get('https://json.medrocket.ru/users/');
         this.users = response.data
-        console.log(this.users)
       } catch (error) {
         console.error
       }
@@ -37,7 +36,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .home {
   width: 744px;
   display: flex;
