@@ -1,12 +1,15 @@
 <template>
   <div>
-    <div class="level-1">
+    <div v-if="favorites.length" class="level-1">
       <div class="level1-2" v-for="element in favorites" :key="element.id">
         <img @click.stop="notActiveStar(element.id)" class="star" src="@/assets/icons/Fav_added.svg" alt="star_active">
         <img class="photo150" @click="showModal(element.url)" :title=element.title :src=element.thumbnailUrl alt="150x150">
         <p class="description">{{ element.title }}</p>
       </div>
     </div>
+    <!-- Если в избранном пусто -->
+        <div v-else> <Empty/></div>
+    <!-- модальное окно для просмотра фото -->
       <dialog-window v-show="visible" @show="closeModal" :show="visible">
         <img :src=photo alt="600x600">
       </dialog-window>
@@ -15,10 +18,11 @@
 
 <script>
 import DialogWindow from '@/components/DialogWindow.vue';
+import Empty from '@/components/Empty.vue';
 export default {
   name: 'Favorites',
   components: {
-    DialogWindow
+    DialogWindow, Empty
   },
   data () {
     return {
@@ -54,7 +58,12 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 42px
-  }
+}
+.level1-2 {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
 .photo150 {
   display:flex; 
   border-radius: 5px;
@@ -64,11 +73,6 @@ export default {
 .photo150:hover {
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0,0,0,0.5)
-}
-.level1-2 {
-  display: flex;
-  flex-direction: column;
-  position: relative;
 }
 .description {
   width: 150px; 
@@ -83,8 +87,13 @@ export default {
   position: absolute;
   margin-left: 73%;
   margin-top: 5%;
+  transition: transform 2s;
+  transform: rotate(-145deg)
 }
 .star:hover {
   cursor: progress;
+  transition: transform 2s;
+  transform: rotate(145deg)
 }
+
 </style>

@@ -1,33 +1,48 @@
 <template>
   <div class="home">
-    <div class="container" >
-      <Users :node="users"/>
+    <div  v-if="!isError">
+        <div class="box" v-if="!isUsersLoading">
+          <Users :node="users"/>
+        </div>
+        <div class='preload' v-else>
+          <img src="@/assets/gifs/loader.gif" alt="gif">
+        </div>
+    </div>
+    <div class="error" v-else>
+      <error-home/>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import Users from '@/components/Users.vue'
+import Users from '@/components/Users.vue';
+import ErrorHome from '@/components/ErrorHome.vue';
 export default {
   name: 'HomeView',
   components: {
-    Users
+    Users, ErrorHome
   },
   data () {
     return {
       users: [],
-      clicked: false
+      clicked: false,
+      isUsersLoading: false,
+      isError: false,
     }
   },
   methods: {
     async fetchUsers () {
       try {
+        this.isUsersLoading = true;
         const response = await axios.get('https://json.medrocket.ru/users/');
-        this.users = response.data
+        setTimeout( async () => {
+          this.users = response.data
+          this.isUsersLoading = false;
+        }, 1000)
       } catch (error) {
-        console.error
-      }
+        this.isError = true
+      } 
     }
   },
   mounted () {
@@ -42,16 +57,14 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.container {
+.box {
   margin-top: 16px;
   display: flex;
 }
-.name{
-  padding-left: 24px;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 22px;
-  line-height: 130%;
-  color: #1C1C1C;
+.preload{
+  padding: 420px 348px
+}
+.error {
+  margin: 25% 25%;
 }
 </style>

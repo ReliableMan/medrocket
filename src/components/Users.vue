@@ -1,50 +1,57 @@
 <template>
-  
   <div>
-    
-
-      <div v-for="(user, index) in node" :key="user.id">
-        <div class="level-1">
-          <img class="img" :class="{active: index === currentIndex - 1}" @click.stop="handlerUser(user.id)" src="@/assets/icons/Open.svg" alt="open-img" />
-          <img class="img" :class="{active: index !== currentIndex - 1}" @click.stop="handlerUserClose" src="@/assets/icons/Close.svg" alt="close-img"/>
-          <p class="name">{{user.name}}</p>
-        </div>
-        <div v-if="!isAlbumsLoading || index !== currentIndex - 1">
-          <div v-for="(album, ind) in albums" :key="album.id">
-            <div v-if="user.id === album.userId" class="level-2">
-              <img :class="{active: ind === currentIndex2}" class="img" @click.stop="handlerAlbum(album.id, ind)"  src="@/assets/icons/Open.svg" alt="open-img" />
-              <img :class="{active: ind !== currentIndex2}" class="img" @click.stop="handlerAlbumClose" src="@/assets/icons/Close.svg" alt="close-img"/>
-              <p class="album" v-if="user.id === album.userId && albums.length">{{ album.title }}</p>
+    <div v-for="(user, index) in node" :key="user.id">
+      <div class="level-1">
+        <img class="img" :class="{active: index === currentIndex - 1}" @click.stop="handlerUser(user.id)" src="@/assets/icons/Open.svg" alt="open-img" />
+        <img class="img" :class="{active: index !== currentIndex - 1}" @click.stop="handlerUserClose" src="@/assets/icons/Close.svg" alt="close-img"/>
+        <p class="name">{{user.name}}</p>
+      </div>
+        <div v-if="!isError || index !== currentIndex - 1">
+          <div v-if="!isAlbumsLoading || index !== currentIndex - 1">
+            <div v-for="(album, ind) in albums" :key="album.id">
+              <div v-if="user.id === album.userId" class="level-2">
+                <img :class="{active: ind === currentIndex2}" class="img" @click.stop="handlerAlbum(album.id, ind)"  src="@/assets/icons/Open.svg" alt="open-img" />
+                <img :class="{active: ind !== currentIndex2}" class="img" @click.stop="handlerAlbumClose" src="@/assets/icons/Close.svg" alt="close-img"/>
+                <p class="album" v-if="user.id === album.userId && albums.length">{{ album.title }}</p>
               </div>
-                  <div v-if="!isPhotosLoading || index !== currentIndex - 1 || ind !== currentIndex2" class="level-3">
-                  <div v-for="(photo, ind2) in photosAlbums" :key="photo.id" >
-                    <div v-if="user.id === album.userId && album.id === photo.albumId">
-                      <img :class="{active: tempData.some(el => el.title === photo.title ) }" @click.stop="handlerStar(ind2)" class="star" src="@/assets/icons/Fav_inactive.svg" alt="star_inactive">
-                      <img :class="{active: !tempData.some(el => el.title === photo.title) }" @click.stop="notActiveStar(photo.id)" class="star" src="@/assets/icons/Fav_added.svg" alt="star_active">
-                      <img class="photo150" @click="showModal(photo.url)" :title=photo.title :src=photo.thumbnailUrl alt="150x150">
+                  <div v-if="!isError2 || index !== currentIndex - 1 || ind !== currentIndex2">
+                    <div v-if="!isPhotosLoading || index !== currentIndex - 1 || ind !== currentIndex2" class="level-3">
+                      <div v-for="(photo, ind2) in photosAlbums" :key="photo.id" >
+                        <div v-if="user.id === album.userId && album.id === photo.albumId">
+                          <img :class="{active: tempData.some(el => el.title === photo.title ) }" @click.stop="handlerStar(ind2)" class="star" src="@/assets/icons/Fav_inactive.svg" alt="star_inactive">
+                          <img :class="{active: !tempData.some(el => el.title === photo.title) }" @click.stop="notActiveStar(photo.id)" class="star" src="@/assets/icons/Fav_added.svg" alt="star_active">
+                          <img class="photo150" @click="showModal(photo.url)" :title=photo.title :src=photo.thumbnailUrl alt="150x150">
+                        </div>
+                      </div>
                     </div>
+                    <!-- прелоадер для альбомов -->
+                        <div class='preload' v-else><img src="@/assets/gifs/loader.gif" alt="gif"></div>
                   </div>
-                  </div>
-                  <div class='preload' v-else><img src="@/assets/gifs/loader.gif" alt="gif"></div>
+                    <!-- в случае ошибки на сервере 1 level -->
+                        <div class="error" v-else> <error-users/></div> 
             </div>
           </div>
-          <div class='preload' v-else><img src="@/assets/gifs/loader.gif" alt="gif"></div>
-      </div>
-      <dialog-window v-show="visible" @show="closeModal" :show="visible">
-        <img :src=photo alt="600x600">
-      </dialog-window>
-
-   
+                    <!-- прелоадер для картинок -->
+                        <div class='preload' v-else><img src="@/assets/gifs/loader.gif" alt="gif"></div>
+        </div>
+                    <!-- в случае ошибки на сервере 2 level-->
+                        <div class="error" v-else> <error-users/> </div>
+    </div>
+                    <!-- модальное окно для просмотра фото -->
+                        <dialog-window v-show="visible" @show="closeModal" :show="visible">
+                          <img :src=photo alt="600x600">
+                        </dialog-window>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import DialogWindow from './DialogWindow.vue';
+import ErrorUsers from '@/components/ErrorUsers.vue';
 export default {
   name: 'Users',
   components: {
-    DialogWindow
+    DialogWindow, ErrorUsers
   },
   props: {
     node: Array,
@@ -60,6 +67,8 @@ export default {
       photo: [],
       isAlbumsLoading: false,
       isPhotosLoading: false,
+      isError: false,
+      isError2: false,
     }
   },
   methods: {
@@ -67,14 +76,13 @@ export default {
       this.currentIndex = id;
       try {
         this.isAlbumsLoading = true
+        const response = await axios.get(`https://json.medrocket.ru/albums?userId=${id}`);
         setTimeout( async () => {
-          const response = await axios.get(`https://json.medrocket.ru/albums?userId=${id}`);
           this.albums = response.data;
           this.isAlbumsLoading = false
         }, 1000)
       } catch (error) {
-        console.error
-      } finally {
+        this.isError = true
       }
     },
     handlerUserClose () {
@@ -85,14 +93,14 @@ export default {
       this.currentIndex2 = index;
       try {
         this.isPhotosLoading = true;
+        const response = await axios.get(`https://json.medrocket.ru/photos?albumId=${id}`);
         setTimeout( async () => {
-          const response = await axios.get(`https://json.medrocket.ru/photos?albumId=${id}`);
           const result = response.data;
           this.photosAlbums = result.slice(0, 11);
           this.isPhotosLoading = false;
         }, 1000)
        } catch (error) {
-        console.error
+         this.isError2 = true
        }
     },
     handlerAlbumClose () {
@@ -127,6 +135,18 @@ export default {
   display: flex; 
   padding-top: 12px
 }
+.level-2 {
+  display: flex; 
+  padding-left: 56px; 
+  flex-wrap: wrap
+}
+.level-3 {
+  display:flex; 
+  flex-wrap: wrap; 
+  padding-left: 102px; 
+  gap: 42px;
+  position: relative;
+}
 .img:hover {
   cursor: pointer
 }
@@ -137,18 +157,6 @@ export default {
   font-size: 22px;
   line-height: 130%;
   color: #1C1C1C;
-}
-.level-2 {
-  display: flex; 
-  padding-left:56px; 
-  flex-wrap: wrap
-}
-.level-3 {
-  display:flex; 
-  flex-wrap: wrap; 
-  padding-left: 102px; 
-  gap: 42px;
-  position: relative;
 }
 .active {
   display: none
@@ -166,21 +174,25 @@ export default {
   position: absolute;
   margin-left: 5%;
   margin-top: 1%;
+  transition: transform 2s;
+  transform: rotate(-145deg)
 }
-
 .star:hover {
-  cursor: progress;
+  transition: transform 2s;
+  transform: rotate(145deg)
 }
-
 .photo150 {
   display:flex; 
   border-radius: 5px;
 }
-.photo150:hover {
+.photo150:hover  {
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0,0,0,0.5)
 }
 .preload{
   padding: 136px 348px
+}
+.error {
+  margin: 25% 25%;
 }
 </style>
