@@ -1,19 +1,30 @@
 <template>
+  <div>
     <div class="level-1">
       <div class="level1-2" v-for="element in favorites" :key="element.id">
         <img @click.stop="notActiveStar(element.id)" class="star" src="@/assets/icons/Fav_added.svg" alt="star_active">
-        <img class="photo150" :title=element.title :src=element.thumbnailUrl alt="150x150">
+        <img class="photo150" @click="showModal(element.url)" :title=element.title :src=element.thumbnailUrl alt="150x150">
         <p class="description">{{ element.title }}</p>
       </div>
     </div>
-
+      <dialog-window v-show="visible" @show="closeModal" :show="visible">
+        <img :src=photo alt="600x600">
+      </dialog-window>
+  </div>
 </template>
 
 <script>
+import DialogWindow from '@/components/DialogWindow.vue';
 export default {
+  name: 'Favorites',
+  components: {
+    DialogWindow
+  },
   data () {
     return {
-      favorites: []
+      favorites: [],
+      visible: false,
+      photo: []
     }
   },
   methods: {
@@ -21,6 +32,13 @@ export default {
       this.favorites = this.favorites.filter((el) => el.id !== photoId);
       localStorage.setItem('savedAlbums', JSON.stringify(this.favorites))
     },
+    showModal(photo) {
+      this.visible = true;
+      this.photo = photo
+    },
+    closeModal() {
+      this.visible = false;
+    }
   }, 
   mounted () {
     const data = localStorage.getItem('savedAlbums');

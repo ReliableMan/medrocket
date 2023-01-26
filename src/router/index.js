@@ -12,12 +12,12 @@ const routes = [
   },
   {
     path: '/favorites',
-    name: 'favorites',
+    name: 'Favorites',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/favorites.vue')
+      return import(/* webpackChunkName: "about" */ '../views/Favorites.vue')
     }
   }
 ]
