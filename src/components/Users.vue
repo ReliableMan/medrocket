@@ -25,14 +25,14 @@
                       </div>
                     </div>
                     <!-- прелоадер для альбомов -->
-                        <div class='preload' v-else><img src="@/assets/gifs/loader.gif" alt="gif"></div>
+                        <div class='preload size-svg' v-else><img src="@/assets/gifs/preloader.svg" alt="preloader"></div>
                   </div>
                     <!-- в случае ошибки на сервере 1 level -->
                         <div class="error" v-else> <error-users/></div> 
             </div>
           </div>
                     <!-- прелоадер для картинок -->
-                        <div class='preload' v-else><img src="@/assets/gifs/loader.gif" alt="gif"></div>
+                        <div class='preload size-svg' v-else><img src="@/assets/gifs/preloader.svg" alt="preloader"></div>
         </div>
                     <!-- в случае ошибки на сервере 2 level-->
                         <div class="error" v-else> <error-users/> </div>
@@ -194,5 +194,9 @@ export default {
 }
 .error {
   margin: 25% 25%;
+}
+.size-svg{
+  width: 200px;
+  height: 200px;
 }
 </style>

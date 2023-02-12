@@ -5,7 +5,7 @@
           <Users :node="users"/>
         </div>
         <div class='preload' v-else>
-          <img src="@/assets/gifs/loader.gif" alt="gif">
+          <img class="size-svg" src="@/assets/gifs/preloader.svg" alt="preloader">
         </div>
     </div>
     <div class="error" v-else>
@@ -69,5 +69,9 @@ export default {
 }
 .error {
   margin: 25% 25%;
+}
+.size-svg{
+  width: 200px;
+  height: 200px;
 }
 </style>
