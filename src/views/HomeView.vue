@@ -62,7 +62,10 @@ export default {
   display: flex;
 }
 .preload{
-  padding: 420px 348px
+  display: flex;
+  justify-content: center;
+  padding-top: 30%;
+  padding-left: 20%;
 }
 .error {
   margin: 25% 25%;

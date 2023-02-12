@@ -9,12 +9,16 @@
 </template>
 
 <style lang="scss">
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  margin: 64px 204px 0 204px;
+  margin-top: 64px;
+  margin-right: calc(100% - 80vw);
+  margin-left: calc(100% - 80vw);
+  max-width: 1300px;
 }
 
 nav {
