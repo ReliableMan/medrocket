@@ -1,19 +1,29 @@
-# medrocket
+# Каталог с вложенностью
 
 ## Project setup
 ```
 npm install
 ```
-
 ### Compiles and hot-reloads for development
 ```
 npm run serve
 ```
+<h4>Страница каталога с прелоадером на всех уровнях вложенности</h4>
+<p>Открытие модального окна на каждый элемент</p>
 
-### Compiles and minifies for production
-```
-npm run build
-```
+![вложенность 2ух уровневая](https://user-images.githubusercontent.com/93074634/218406448-5aa07d2b-868b-45e8-ae5c-7344461fad1b.gif)
+<br/>
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+<h4>Страница избранного </h4>
+<p>Если ничего не добавлено, отображается картинка (Список избранного пуст)</p>
+<p>В случае если добавлено, отображается картинка со звездочкой с возможностью удаления из избранного</p>
+<p>Картинки сохраняются даже после перезагрузки (localStorage)</p>
+
+![Страница избранного](https://user-images.githubusercontent.com/93074634/218409165-4468c1ac-1548-4c2a-84cd-f72b93718ad0.gif)
+<br/>
+
+<h4>Обработка error-page, в случае если допущена ошибка в http запросе</h4>
+<p>На 1 уровне - исполнителей, 2 - альбомов, 3 - картинок</p>
+
+![обработка ошибок на разных уровнях](https://user-images.githubusercontent.com/93074634/218411837-79ff4f5b-b295-4dc2-ae9e-50b3fb726518.gif)
+<br/>
